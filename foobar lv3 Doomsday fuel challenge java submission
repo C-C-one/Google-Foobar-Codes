@@ -1,6 +1,6 @@
 //the general insperation of this solution came from http://math.plussed.net/markov/
 //the code is completely original
-//! the third test case does not pass, suspected to be interger overflow but was not able to replicate in real tests !
+//the code will pass the tests
 
 public class foobar_google_ddfuel {
 	/*
@@ -87,6 +87,10 @@ public class foobar_google_ddfuel {
 	}
 
 	public static int[] solution(int[][] m) {
+		if (m.length == 1) {
+			int[] type1 = {1, 1};
+			return type1;
+		}
 		int variation = m.length;
 		int terminals = 0;
 		int[] total = new int[variation];
