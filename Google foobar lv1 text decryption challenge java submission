@@ -1,0 +1,39 @@
+//the code is completely original
+//the code will pass the tests
+
+public class foobar_google {
+
+	public static String solution (String x) {
+		//String test1 = "wrw blf hvv ozhg mrtsg'h vkrhlwv?";
+		//System.out.print(solution(test1));
+		char[] char_array = x.toCharArray();
+		int length = x.length();
+		for (int i = 0; i < length; i++) {
+			int answer = is_lower_char(char_array[i]);
+			if (answer != -1) {
+				char_array[i] = (char) ('a' + answer);
+			}
+		}
+		String answer = new String(char_array);
+		return answer;
+	}
+	
+	public static int is_lower_char(char x) {
+		if (x >= 'a' && x <= 'z') {
+			return 'z' - x;
+		}
+		return -1;
+	} 
+	
+  //below was omitted during submission
+  
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String test1 = "wrw blf hvv ozhg mrtsg'h vkrhlwv?";
+		System.out.print(solution(test1));
+		System.out.println();
+		test1 = "Yvzs! I xzm'g yvorvev Lzmxv olhg srh qly zg gsv xlolmb!!";
+		System.out.print(solution(test1));
+
+	}
+}
