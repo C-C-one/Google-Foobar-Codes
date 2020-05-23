@@ -1,0 +1,107 @@
+//the code is completely original
+//the code will pass the tests
+
+/* this is an example of the chessboard
+-------------------------
+| 0| 1| 2| 3| 4| 5| 6| 7|
+-------------------------
+| 8| 9|10|11|12|13|14|15|
+-------------------------
+|16|17|18|19|20|21|22|23|
+-------------------------
+|24|25|26|27|28|29|30|31|
+-------------------------
+|32|33|34|35|36|37|38|39|
+-------------------------
+|40|41|42|43|44|45|46|47|
+-------------------------
+|48|49|50|51|52|53|54|55|
+-------------------------
+|56|57|58|59|60|61|62|63|
+-------------------------
+ */
+ 
+import java.util.LinkedList;
+ 
+public class foobar_google_knighthop {
+	static int size = 8;
+
+	public static void add_move(int r, int c, int[][] board, int step,
+			LinkedList<Integer> stack_r, LinkedList<Integer> stack_c) {
+		if (r <= 7 && r >= 0 && c <= 7 && c >= 0) {
+			if (board[r][c] != 0) {
+				return;
+			}
+			stack_r.add(r);
+			stack_c.add(c);
+			board[r][c] = step;
+		}
+	}
+
+	public static void generate_moves(int[][] board, 
+			LinkedList<Integer> stack_r, LinkedList<Integer> stack_c) {
+		int r = stack_r.pop();
+		int c = stack_c.pop();
+
+		int step = board[r][c] + 1;
+		int r1 = r - 2;
+		int c1 = c - 1;
+		int r2 = r - 2;
+		int c2 = c + 1;
+		int r3 = r + 2;
+		int c3 = c - 1;
+		int r4 = r + 2;
+		int c4 = c + 1;
+		int r5 = r - 1;
+		int c5 = c - 2;
+		int r6 = r + 1;
+		int c6 = c - 2;
+		int r7 = r - 1;
+		int c7 = c + 2;
+		int r8 = r + 1;
+		int c8 = c + 2;
+		add_move(r1, c1, board, step, stack_r, stack_c);
+		add_move(r2, c2, board, step, stack_r, stack_c);
+		add_move(r3, c3, board, step, stack_r, stack_c);
+		add_move(r4, c4, board, step, stack_r, stack_c);
+		add_move(r5, c5, board, step, stack_r, stack_c);
+		add_move(r6, c6, board, step, stack_r, stack_c);
+		add_move(r7, c7, board, step, stack_r, stack_c);
+		add_move(r8, c8, board, step, stack_r, stack_c);
+	}
+
+	public static int solve(int dest_c, int dest_r, int[][] board,
+			LinkedList<Integer> stack_r, LinkedList<Integer> stack_c) {
+		while (!stack_r.isEmpty()) {
+			if (board[dest_r][dest_c] != 0) {
+				return board[dest_r][dest_c];
+			}
+			generate_moves(board, stack_r, stack_c);
+		}
+
+		return -1;
+	}
+
+	public static int solution(int src, int dest) {
+		int[][] board = new int[size][size];
+		int start_c = src % size;
+		int start_r = src / size;
+		int fin_c = dest % size;
+		int fin_r = dest / size;
+		if (start_c == fin_c && start_r == fin_r) {
+			return 0;
+		}
+		LinkedList<Integer> list_c = new LinkedList<Integer>(); 
+		LinkedList<Integer> list_r = new LinkedList<Integer>(); 
+		list_c.add(start_c);
+		list_r.add(start_r);
+		//Your code here
+		return solve(fin_c, fin_r, board, list_r, list_c);
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		System.out.print(solution(0, 0));
+	}
+
+}
