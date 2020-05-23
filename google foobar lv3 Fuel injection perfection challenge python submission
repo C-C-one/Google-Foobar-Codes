@@ -1,0 +1,38 @@
+//the code and method is completely original
+//the code will pass the tests
+//i learned python about 3h ago, might not be the most efficient implimentation
+
+def smallestdiff(n) :
+    step = 1
+    at = 1
+    prev_answer = 0;
+    previous_diff = n - 1
+    if (n == 0) :
+        return 0, 0
+    while 1:
+        if (prev_answer == 0) :
+            prev_answer = 1
+        at = at * 2
+        new_diff = abs(n - at)
+        if (new_diff + prev_answer >= n) :
+            return previous_diff, step
+        previous_diff = new_diff
+        prev_answer = at;
+        step = step + 1
+
+    
+def solution(n):
+    item = int(n)
+    if (item == 1) :
+        return 0;
+    item, saved= smallestdiff(item)
+    count = saved - 1
+    while 1:
+        item, new = smallestdiff(item)
+        if (new == 0) :
+            return count;
+        elif (item == 0) :
+            return count + 1;
+        saved = new
+        count = count + 1
+        
