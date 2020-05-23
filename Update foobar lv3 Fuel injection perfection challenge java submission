@@ -1,0 +1,259 @@
+//the code is completely original
+//the code is long due to traversing through int[] 
+//compromizing for java's limit for integer & long
+
+public class foobar_google_pallet {
+
+	static int pointer = 0;
+	public static int[] remove_reversed (int digit, int[] item) {
+		int zeros = 0;
+		for (int i = digit - 1; i >= 0; i--) {
+			if(item[i] == 0) {
+				zeros++;
+			}
+		}
+		int[] answer = new int[digit - zeros];
+		for (int i = 0; i < digit - zeros; i++) {
+			answer[i] = item[i];
+		}
+		return answer;
+	}
+
+	public static int[] reverse (int digit, int[] item) {
+		int at = 0;
+		int[] answer = new int[digit];
+		for (int i = digit - 1; i >= 0; i--) {
+			answer[at] = item[i];
+			at++;
+		}
+		return answer;
+	}
+	public static int[] remove_zeros (int digit, int[] item) {
+		int zeros = 0;
+		for (int i = 0; i < digit; i++) {
+			if(item[i] == 0) {
+				zeros++;
+			}
+		}
+		int[] answer = new int[digit - zeros];
+		for (int i = 0; i < digit - zeros; i++) {
+			answer[i] = item[i + zeros];
+		}
+		if(digit-zeros == 0) {
+			answer = new int[1];
+		}
+		return answer;
+	}
+
+	public static int compare (int digit_target, int digit_vic,
+			int[] target, int[] vic) {
+		if (digit_target > digit_vic) {
+			return 1;
+		}
+		else if (digit_target < digit_vic) {
+			return -1;
+		} else {
+			for (int i = digit_target - 1; i >= 0; i--) {
+				if (target[i] > vic[i]) {
+					return 1;
+				}
+				else if (target[i] < vic[i]) { 
+					return -1;
+				}
+			}
+		} 
+		return 0;
+	}
+
+	public static int[] difference(int digit_target, int digit_vic,
+			int[] target, int[] vic) {
+		int result = compare(digit_target, digit_vic, target, vic);
+		int down = 0;
+		if (result < 0) { // target smaller
+			int[] temp = new int[digit_vic];
+			for (int i = 0; i < digit_target; i++) {
+				int temp_answer = vic[i] - target[i] - down;
+				down = 0;
+				if (temp_answer < 0) {
+					temp[i] = 10 + temp_answer;
+					down = 1;
+				} 
+				else if (temp_answer == -10) {
+					temp[i] = 0;
+					down = 1;
+				} else {
+					temp[i] = temp_answer;
+				}
+			}
+			if (down == 1) {
+				while (true) {
+					if (vic[digit_target] == 0) {
+						temp[digit_target] = 9;
+						digit_target++;
+					}
+					else {
+						temp[digit_target] = vic[digit_target] - 1;
+						break;
+					}
+				}
+			}
+			return temp;
+		} else { // vic smaller
+			int[] temp = new int[digit_target];
+			for (int i = 0; i < digit_vic; i++) {
+				int temp_answer = target[i] - vic[i] - down;
+				down = 0;
+				if (temp_answer < 0) {
+					temp[i] = 10 + temp_answer;
+					down = 1;
+				} 
+				else if (temp_answer == -10) {
+					temp[i] = 0;
+					down = 1;
+				} else {
+					temp[i] = temp_answer;
+				}
+			}
+			if (down == 1) {
+				while (true) {
+					if (target[digit_vic] == 0) {
+						temp[digit_vic] = 9;
+						digit_vic++;
+					}
+					else {
+						temp[digit_vic] = target[digit_vic] - 1;
+						break;
+					}
+				}
+			}
+			return temp;
+		}
+	}
+	public static int[] start_opperation(int target_digit, int[] HUGE_number) {
+		if(target_digit == 0 && HUGE_number[0] == 1) {
+			int[] x = { 0 };
+			return x;
+		}
+		int[] now_at = new int[target_digit + 2];
+		int[] hold = new int[target_digit + 2];
+		int[] hold_difference = new int[target_digit + 2];
+		now_at[0] = 1;
+		boolean act = true;
+		int digit_at = 0;
+		int up = 0;
+		while(true) {
+			for (int i = 0; i < digit_at; i++) {
+				int new_digit = now_at[i] * 2 + up;
+				up = 0;
+				if (new_digit >= 10) {
+					up = 1;
+					now_at[i] = new_digit - 10;
+				} else {
+					now_at[i] = new_digit;
+				}
+			}
+			if (now_at[digit_at] >= 5) {
+				now_at[digit_at] = (now_at[digit_at] * 2 + up) - 10;
+				digit_at++;
+				now_at[digit_at]++;
+				up = 0;
+			} else {
+				now_at[digit_at] = (now_at[digit_at] * 2 + up);
+				up = 0;
+			}
+
+			if (digit_at >= target_digit) {
+				if (act) {
+					act = false;
+					int[] temp_na = remove_reversed(now_at.length, now_at);
+					int temp_len = temp_na.length;
+					hold_difference = 
+							remove_zeros(temp_len, reverse(temp_len,
+						    difference(temp_len, HUGE_number.length, temp_na, HUGE_number)));
+
+				} else {
+					int[] temp_na = remove_reversed(now_at.length, now_at);
+					int temp_len = temp_na.length;
+					hold = remove_zeros(temp_len, reverse(temp_len,
+						   difference(temp_len, HUGE_number.length, temp_na, HUGE_number)));
+					if (compare(hold.length, hold_difference.length, hold, hold_difference) == -1) {
+						hold_difference = hold;
+					} else {
+						return hold_difference;
+					}
+				}
+				/*
+				System.out.println();
+				System.out.println("hold_diff: ");
+				for (int i = hold_difference.length - 1; i >= 0; i--) {
+					System.out.print(hold_difference[i]);
+				}
+				System.out.println();
+				System.out.println("hold: ");
+				for (int i = hold.length - 1; i >= 0; i--) {
+					System.out.print(hold[i]);
+				}
+				System.out.println();
+				*/
+				 
+			}
+			pointer++;
+		}
+	}
+
+	public static int solution(String x) {
+		int digit = x.length();
+		char[] item_char = x.toCharArray();
+		int[] item_int = new int[digit];
+		for (int i = 0; i < digit; i++) {
+			//System.out.println(i - zero_front);
+			item_int[i] = (int) (item_char[i] - '0');
+		}
+		item_int = start_opperation(digit - 1, reverse(digit, item_int));
+		digit = item_int.length;
+		item_int = remove_zeros(digit, reverse(digit, item_int));
+		digit = item_int.length;
+		int c = pointer;
+		int previous = pointer;
+		while (true) { 
+			item_int = start_opperation(digit - 1, item_int);
+			digit = item_int.length;
+			if (pointer == previous + 1) {
+				return c + 1;
+			}
+			if (pointer == previous) {
+				return c + 1;
+			}
+			previous = pointer;
+			item_int = remove_zeros(digit, reverse(digit, item_int));
+			digit = item_int.length;
+			item_int = reverse(digit, item_int);
+			c++;
+		}
+	}
+
+// code below was omitted during submission
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		/*
+		int[] z = {9, 1, 1, 2, 3, 4, 9, 2, 0, 1}; 
+		int[] a = {1, 2 ,3, 9, 9, 0, 3, 2, 1, 0, 0, 1};
+		int[] answer = difference(10, 12, z, a);
+		for (int i = 11; i >= 0; i --) {
+			System.out.print(answer[i]);
+		}
+		System.out.println();
+		int[] j = { 1, 2, 3, 0 };
+		j = remove_zeros(4, reverse(4, j));
+		for (int i = 0; i < j.length; i++) {
+			System.out.print(j[i]);
+		}
+		*/
+		String j = "";
+		System.out.println(solution(j));
+		
+	}
+
+}
