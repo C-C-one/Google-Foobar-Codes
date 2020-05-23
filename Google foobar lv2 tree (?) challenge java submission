@@ -1,0 +1,42 @@
+//the code is completely original
+//the code will pass the tests
+//i forgot the exact name of the problem
+
+public class foobar_google_stupidlyexplainedtree {
+//2^h-1
+	public static int answer(int at, int skip, int before, int number) {
+		if (at == number) {
+			return before;
+		} else {
+			int half = (at - skip) / 2;
+			if (number - skip > half) {
+				return answer(half * 2 + skip, skip + half, at, number);
+			} else {
+				return answer(half + skip, skip, at, number);
+			}
+		}
+	}
+	
+	public static int[] solution(int h, int[] q) {
+		int length = q.length;
+		int[] answer = new int[length];
+		int total_size = (int) (Math.pow(2, h) - 1);
+		for (int i = 0; i < length; i++) {
+			answer[i] = answer(total_size, 0, -1, q[i]);
+		}
+		return answer;
+	}
+  
+  //below was omitted during submission
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int list[] = {19, 14, 28};
+		int answerlist[] = solution(5, list);
+		for (int i = 0; i < 3; i++) {
+			System.out.println(answerlist[i]);
+		}
+
+	}
+
+}
