@@ -1,0 +1,44 @@
+//the code and concept is completely original
+//the code will pass the tests
+
+Formula as below
+'''
+M = M
+F = F + M
+
+M = M + M
+F = F
+'''
+
+#code starts here
+
+def make_move(x, y):
+    if(x == 1 and y == 1):
+        return 0, 0, 0
+    if(x == y):
+        return -1, -1, -1
+    elif(x > y):
+        return x % y, y, int(x / y)
+    else:
+        return x, y % x, int(y / x)
+    
+def solution(x, y):
+    xx = int(x)
+    yy = int(y)
+    if(xx < 1 or yy < 1):
+        return "impossible"
+    if(x == 1 and y == 1):
+        print (0)
+        return
+    moves = 0;
+    while(1):
+        xx, yy, steps_taken = make_move(xx, yy)
+        moves = moves + steps_taken
+        if (xx == 1):
+            print (moves + yy - 1)
+            break
+        if(yy == 1):
+            print (moves + xx - 1)
+            break
+        if (xx == 0 or yy == 0):
+            return "impossible"    
