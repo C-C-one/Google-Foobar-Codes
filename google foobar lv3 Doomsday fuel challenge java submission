@@ -2,6 +2,13 @@
 //the code is completely original
 //the code will pass the tests
 
+'''
+explination:
+Using the probability matrix method explained in markov chain found on the website above
+I run the method on top of the previous answer a few times and using the tolerance level of 3 digits
+and find the most reasonable factors
+'''
+
 public class foobar_google_ddfuel {
 	/*
 	 {{0, 2, 1, 0, 0}, 
