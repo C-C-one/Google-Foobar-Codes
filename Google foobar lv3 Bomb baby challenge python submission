@@ -9,6 +9,13 @@ F = F + M
 M = M + M
 F = F
 '''
+'''
+Explaination: as the formula above, one number can only be changed via adding the other number.
+Thus starting from the bigger number, only way forward is subtracting the smaller number from the bigger number
+But whenever there are 2 number that are the same, x - x = 0, the move is impossible to be completed, as we always
+start with 1 bomb. Hence the desinated number is inreachable
+I used remainer so situation like (10 ^ 50, 1) will take less time
+'''
 
 #code starts here
 
