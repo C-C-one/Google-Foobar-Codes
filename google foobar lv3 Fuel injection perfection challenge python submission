@@ -2,6 +2,15 @@
 //the code will pass the tests
 //i learned python about 3h ago, might not be the most efficient implimentation
 
+''' 
+explination:
+There are 3 possible step, x = 2x, x + 1, x - 1. The quickest way to increase the number is to multiply. Thus i start off multiplying 
+The starting number: 1 by 2 infinite times until the number closest to the answer n, recording the step number it takes to achieve
+the answer. And i find the difference between the closest answer and the desinated answer. Passing the difference in again to find 
+the number closest to the differene. Any other step only require 1 single step, as adding or removing 1 mid way will accumulate. 
+The loop will end at 1.
+'''
+
 def smallestdiff(n) :
     step = 1
     at = 1
