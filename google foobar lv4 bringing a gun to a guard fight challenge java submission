@@ -40,15 +40,15 @@ just the top wall before hitting the elite guard with a total shot distance of s
 Explination: Took me half a day to figure out this one, but i think it should be the optinal way to approach this
 Instead of doing complicated vector caclulations, i can break up the question into: x bounces vertically, y bounces horrizontally
 instead of switching from [x, y] to [-x, y] or [x, y] to [x, -y] when it bounces off the vertical or horrizontal wall, respectively.
-I instead can create a mirrored image on the other side, simular to when you take shower and u see ur reflection.
+I instead replaced the walls with mirrors which every time it bounces can create a mirrored image on the other side, 
+simular to when you take shower and u see ur reflection.
 (i actually thought about this when i was brushing my teeth lol). So for example, you want to bounce off of the top wall and
 hit your enemy, you shoot at the reflection when u look at the mirror directly.
-
 
 Another easier explination is if you want to hit the target when it bounces x time from horrizontal walls, y times from vertical walls.
 Just shoot the y th target in the horrizontal mirror in the x th reflection layer. 
 
-a board with x of 3 and y of 3 as below (only [1, 1], [2, 1], [1, 2], [2, 2] is valid space)
+a board with x of 3 and y of 3 as below (only [1, 1], [2, 1], [1, 2], [2, 2] is valid space), M is me G is guard
 ーーーー
 | M   |
 |   G |
