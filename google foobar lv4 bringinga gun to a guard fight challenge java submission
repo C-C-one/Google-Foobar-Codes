@@ -1,0 +1,350 @@
+/*
+//the code and approach is completely original
+//the code will pass the tests
+
+
+Uh-oh - you've been cornered by one of Commander Lambdas elite guards! Fortunately, 
+you grabbed a beam weapon from an abandoned guard post while you were running through 
+the station, so you have a chance to fight your way out. But the beam weapon is potentially 
+dangerous to you as well as to the elite guard: its beams reflect off walls, meaning you'll 
+have to be very careful where you shoot to avoid bouncing a shot toward yourself!
+
+Luckily, the beams can only travel a certain maximum distance before becoming too weak to cause damage. 
+You also know that if a beam hits a corner, it will bounce back in exactly the same direction. 
+And of course, if the beam hits either you or the guard, it will stop immediately (albeit painfully). 
+
+Write a function solution(dimensions, your_position, guard_position, distance) 
+that gives an array of 2 integers of the width and height of the room, an array 
+of 2 integers of your x and y coordinates in the room, an array of 2 integers of
+the guard's x and y coordinates in the room, and returns an integer of the number
+of distinct directions that you can fire to hit the elite guard, given the maximum
+distance that the beam can travel.
+
+The room has integer dimensions [1 < x_dim <= 1250, 1 < y_dim <= 1250]. You and 
+the elite guard are both positioned on the integer lattice at different distinct 
+positions (x, y) inside the room such that [0 < x < x_dim, 0 < y < y_dim]. Finally,
+the maximum distance that the beam can travel before becoming harmless will be given
+as an integer 1 < distance <= 10000.
+
+For example, if you and the elite guard were positioned in a room with dimensions
+[3, 2], your_position [1, 1], guard_position [2, 1], and a maximum shot distance of 
+4, you could shoot in seven different directions to hit the elite guard 
+(given as vector bearings from your location): [1, 0], [1, 2], [1, -2], [3, 2], 
+[3, -2], [-3, 2], and [-3, -2]. As specific examples, the shot at bearing [1, 0] 
+is the straight line horizontal shot of distance 1, the shot at bearing [-3, -2] 
+bounces off the left wall and then the bottom wall before hitting the elite guard 
+with a total shot distance of sqrt(13), and the shot at bearing [1, 2] bounces off
+just the top wall before hitting the elite guard with a total shot distance of sqrt(5).
+
+
+Explination: Took me half a day to figure out this one, but i think it should be the optinal way to approach this
+Instead of doing complicated vector caclulations, i can break up the question into: x bounces vertically, y bounces horrizontally
+instead of switching from [x, y] to [-x, y] or [x, y] to [x, -y] when it bounces off the vertical or horrizontal wall, respectively.
+I instead can create a mirrored image on the other side, simular to when you take shower and u see ur reflection.
+(i actually thought about this when i was brushing my teeth lol). So for example, you want to bounce off of the top wall and
+hit your enemy, you shoot at the reflection when u look at the mirror directly.
+
+
+Another easier explination is if you want to hit the target when it bounces x time from horrizontal walls, y times from vertical walls.
+Just shoot the y th target in the horrizontal mirror in the x th reflection layer. 
+
+a board with x of 3 and y of 3 as below (only [1, 1], [2, 1], [1, 2], [2, 2] is valid space)
+ーーーー
+| M   |
+|   G |
+ーーーー
+bounce 1 time off of the top wall means hitting the reflection of the guard when it is reflected once from the top mirror
+mirrored image:
+ーーーー
+|   GR|
+| M   |
+ーーーー
+| MO  |
+|   G |
+ーーーー
+the displacement of x is 1, displacement of y is 3, thus the distance will be sqrt(1 * 1 + 3 * 3)
+More complicated example: bounce off 1 time from top wall and 1 time from right wall
+ーーーーーーー
+|   G | GR  |
+| M   |   M |
+ーーーーーーー
+| MO  |   M |
+|   G | G   |
+ーーーーーーー
+So making a straight line from MO to GR will give you the distance of bullet when it bounce off the top wall
+and the right wall. 
+
+To avlid shooting yourself, just make another list when staring and ending point is yourself and remove the duplicates
+*/
+
+//code starts here
+
+import java.util.Arrays;
+
+public class foobar_google_gun_guard_fight {
+
+	public static int final_answer(double[][] possible, double[][]bad) {
+		int final_len = possible[0].length;
+		int final_ans = final_len;
+		int bad_len = bad[0].length;
+		for (int i = 0; i < final_len; i++) {
+			for (int x = 0; x < bad_len; x++) {
+				boolean d = false;
+				if (possible[0][i] == bad[0][x] && possible[1][i] == bad[1][x]) {
+					d = true;
+				} 
+				else if (possible[0][i] == bad[0][x] && bad[0][x] == 0) {
+					if (possible[1][i] < 0 && bad[1][x] < 0) {
+						d = true;
+					} 
+					else if (possible[1][i] >= 0 && bad[1][x] >= 0) {
+						d = true;
+					}
+				}
+				else if (possible[1][i] == bad[1][x] && bad[1][x] == 0) {
+					if (possible[0][i] < 0 && bad[0][x] < 0) {
+						d = true;
+					}
+					else if (possible[0][i] >= 0 && bad[0][x] >= 0) {
+						d = true;
+					}
+				}
+				if (d) {
+					if (possible[2][i] >= bad[2][x]) {
+						final_ans--;
+						break;
+					}
+				}
+			}
+		}
+		return final_ans;
+	}
+
+	public static double[][] generate_badideas(int[][] item) {
+		int length = item[1].length;
+		int[][] backup = new int[2][length];
+		double[] len_sqr = new double[length];
+		for (int i = 0; i < length; i++) {
+			len_sqr[i] = Math.sqrt(item[0][i] * item[0][i] + item[1][i] * item[1][i]);
+			if (item[0][i] == 0) {
+				if (item[1][i] < 0) {
+					item[1][i] = -1;
+				} 
+				else if (item[1][i] > 0) {
+					item[1][i] = 1;
+				}
+			}
+			else if (item[1][i] == 0) {
+				if (item[0][i] < 0) {
+					item[0][i] = -1;
+				}
+				else if (item[0][i] > 0) {
+					item[0][i] = 1;
+				}
+			}
+			backup[0][i] = item[0][i];
+			backup[1][i] = item[1][i];
+		}
+		int valid_amount = 0;
+		int[] sek_item = new int[length];
+		reduce(backup);
+		for(int i = 0; i < length; i++) {
+			int targ_item[] = {backup[0][i], backup[1][i]};
+			sek_item[valid_amount] = i;
+			valid_amount++;
+			for (int x = 0; x < length; x++) {
+				if (targ_item[0] == 0 && targ_item[1] == 0) {
+					valid_amount --;
+					break;
+				}
+				if (i != x) {
+					if (targ_item[0] == backup[0][x] && targ_item[1] == backup[1][x]) {
+						if (len_sqr[i] > len_sqr[x]) {
+							backup[0][i] = 0;
+							backup[1][i] = 0;
+							valid_amount--;
+							break;
+						}
+						backup[0][x] = 0;
+						backup[1][x] = 0;
+					}
+				}
+			}
+		}
+		double[][] all_valid = new double[3][valid_amount];
+		for (int i = 0; i < valid_amount; i++) {
+			int loc = sek_item[i];
+			all_valid[0][i] = backup[0][loc];
+			all_valid[1][i] = backup[1][loc];
+			all_valid[2][i] = len_sqr[loc];
+		}
+		return all_valid;
+
+	}
+
+	public static void reduce (int[][] item) {
+		int len = item[1].length;
+		for (int i = 0; i < len; i++) {
+			boolean switchz = false;
+			if (item[0][i] < 0) {
+				switchz = true;
+			}
+			boolean switcho = false;
+			if (item[1][i] < 0) {
+				switcho = true;
+			}
+			int temp[] = {Math.abs(item[0][i]), Math.abs(item[1][i])};
+			int min = 0;
+			if (temp[1] < temp[0]) {
+				min = 1;
+			}
+			boolean continuec = true;
+			while (continuec) {
+				continuec = false;
+				if (temp[min] == 1 || temp[min] == 0) {
+					break;
+				}
+				for(int x = 2; x <= temp[min]; x++) {
+					if (temp[0] % x == 0 && temp[1] % x == 0) {
+						continuec = true;
+						temp[0] /= x;
+						temp[1] /= x;
+					}
+				}
+			}
+			item[0][i] = temp[0];
+			if (switchz) {
+				item[0][i] = -temp[0];
+			}
+			item[1][i] = temp[1];
+			if (switcho) {
+				item[1][i] = -temp[1];
+			}
+		}
+	}
+
+	public static int mirror2(int reflect_amount, int[] board, int[] me_pos, int[] guard_pos,
+			int axis) {
+		int full = reflect_amount - 1;
+		if (reflect_amount < 0) {
+			full += 2;
+			if (full > 0) {
+				full = 0;
+			}
+		} 
+		else if (full < 0) {
+			full = 0;
+		}
+		if (axis == 0) {
+			int general_board = Math.abs(board[0] * full);
+			if (reflect_amount < 0) {
+				if (reflect_amount % 2 == 0) {
+					return -(general_board + me_pos[0] + (board[0] - guard_pos[0]));
+				} else {
+					return -(general_board + me_pos[0] + guard_pos[0]);
+				}
+			} else {
+				if (reflect_amount % 2 == 0) {
+					return general_board + (board[0] - me_pos[0]) + guard_pos[0];
+				} else {
+					return general_board + (board[0] - me_pos[0]) + board[0] - guard_pos[0];
+				}
+			}
+		} else { //y
+			int general_board = Math.abs(board[1] * full);
+			if (reflect_amount < 0) {
+				if (reflect_amount % 2 == 0) {
+					return -(general_board + me_pos[1] + (board[1] - guard_pos[1]));
+				} else {
+					return -(general_board + me_pos[1] + guard_pos[1]);
+				}
+			} else {
+				if (reflect_amount % 2 == 0) {
+					return general_board + (board[1] - me_pos[1]) + guard_pos[1];
+				} else {
+					return general_board + (board[1] - me_pos[1]) + (board[1] - guard_pos[1]);
+				}
+			}
+		}
+
+	}
+
+	public static int[][] quarter_thing(int[] dimensions, int[] your_position, int[] guard_position, int distance) {
+		int times1 = distance / dimensions[0] + 1;
+		int[] x_dist_posilst = new int[times1 + 1];
+		int[] x_dist_negilst = new int[times1 + 1];
+		for(int i = 1; i <= times1; i++) {
+			x_dist_posilst[i] = mirror2(i, dimensions, your_position, guard_position, 0);
+			x_dist_negilst[i] = mirror2(-i, dimensions, your_position, guard_position, 0);
+		}
+		x_dist_posilst[0] = guard_position[0] - your_position[0];
+		int times2 = distance / dimensions[1] + 1;
+		int[] y_dist_posilst = new int[times2 + 1];
+		int[] y_dist_negilst = new int[times2 + 1];
+		for(int i = 1; i <= times2; i++) {
+			y_dist_posilst[i] = mirror2(i, dimensions, your_position, guard_position, 1);
+			y_dist_negilst[i] = mirror2(-i, dimensions, your_position, guard_position, 1);
+		}
+		y_dist_posilst[0] = guard_position[1] - your_position[1];
+		int[] answers_target_x = new int[1];
+		int[] answers_target_y = new int[1];
+		int answers_target_len = 0;
+		int answers_target_max_len = 1;
+		for (int x = times1; x >= -times1; x--) {
+			for (int y = times2; y >= -times2; y--) {
+				int x_now = x_dist_posilst[Math.abs(x)];
+				int y_now = y_dist_posilst[Math.abs(y)];
+				if (x < 0) {
+					x_now = x_dist_negilst[Math.abs(x)];
+				} 
+				if (y < 0) {
+					y_now = y_dist_negilst[Math.abs(y)];
+				}
+				if(Math.sqrt(x_now * x_now + y_now * y_now) <= distance) {
+					if (answers_target_len == answers_target_max_len) {
+						int[] temparr = new int[answers_target_max_len * 2];
+						int[] temparr2 = new int[answers_target_max_len * 2];
+						for (int i = 0; i < answers_target_len; i++) {
+							temparr[i] = answers_target_x[i];
+							temparr2[i] = answers_target_y[i];
+						}
+						answers_target_x = temparr;
+						answers_target_x[answers_target_len] = x_now;
+						answers_target_y = temparr2;
+						answers_target_y[answers_target_len] = y_now;
+						answers_target_max_len *= 2;
+						answers_target_len++;
+					} else {
+						answers_target_x[answers_target_len] = x_now;
+						answers_target_y[answers_target_len] = y_now;
+						answers_target_len++;
+					}
+				}
+			}
+		}
+		answers_target_x = Arrays.copyOfRange(answers_target_x, 0, answers_target_len);
+		answers_target_y = Arrays.copyOfRange(answers_target_y, 0, answers_target_len);
+		int[][] ret = {answers_target_x, answers_target_y};
+		return ret;
+
+	}
+
+	public static int solution(int[] dimensions, int[] your_position, int[] guard_position, int distance) {
+		//Your code here
+		int[][] hit_him = quarter_thing(dimensions, your_position, guard_position, distance);
+		int[][] hit_myself = quarter_thing(dimensions, your_position, your_position, distance);
+		double[][] path_myself = generate_badideas(hit_myself);
+		double[][] path_enemy = generate_badideas(hit_him);
+		return(final_answer(path_enemy, path_myself));
+	}
+
+// below was ommitted during sumbission
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int[] item1 = {300,275};
+		int[] item2 = {150,150};
+		int[] item3 = {185,100};
+		System.out.println(solution(item1, item2, item3, 500));
+	}
+
+}
