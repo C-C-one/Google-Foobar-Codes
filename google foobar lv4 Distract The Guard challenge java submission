@@ -1,0 +1,243 @@
+//the code and method is completely original
+//the code will pass the tests
+
+/*
+The time for the mass escape has come, and you need to distract the guards so that the bunny prisoners can make it out! Unfortunately for you, they're watching the bunnies closely. Fortunately, this means they haven't realized yet that the space station is about to explode due to the destruction of the LAMBCHOP doomsday device. Also fortunately, all that time you spent working as first a minion and then a henchman means that you know the guards are fond of bananas. And gambling. And thumb wrestling.
+
+The guards, being bored, readily accept your suggestion to play the Banana Games.
+
+You will set up simultaneous thumb wrestling matches. In each match, two guards will pair off to thumb wrestle. The guard with fewer bananas will bet all their bananas, and the other guard will match the bet. The winner will receive all of the bet bananas. You don't pair off guards with the same number of bananas (you will see why, shortly). You know enough guard psychology to know that the one who has more bananas always gets over-confident and loses. Once a match begins, the pair of guards will continue to thumb wrestle and exchange bananas, until both of them have the same number of bananas. Once that happens, both of them will lose interest and go back to guarding the prisoners, and you don't want THAT to happen!
+
+For example, if the two guards that were paired started with 3 and 5 bananas, after the first round of thumb wrestling they will have 6 and 2 (the one with 3 bananas wins and gets 3 bananas from the loser). After the second round, they will have 4 and 4 (the one with 6 bananas loses 2 bananas). At that point they stop and get back to guarding.
+
+How is all this useful to distract the guards? Notice that if the guards had started with 1 and 4 bananas, then they keep thumb wrestling! 1, 4 -> 2, 3 -> 4, 1 -> 3, 2 -> 1, 4 and so on.
+
+Now your plan is clear. You must pair up the guards in such a way that the maximum number of guards go into an infinite thumb wrestling loop!
+
+Write a function solution(banana_list) which, given a list of positive integers depicting the amount of bananas the each guard starts with, returns the fewest possible number of guards that will be left to watch the prisoners. Element i of the list will be the number of bananas that guard i (counting from 0) starts with.
+
+The number of guards will be at least 1 and not more than 100, and the number of bananas each guard starts with will be a positive integer no more than 1073741823 (i.e. 2^30 -1). Some of them stockpile a LOT of bananas.
+
+Languages
+=========
+
+To provide a Python solution, edit solution.py
+To provide a Java solution, edit Solution.java
+
+Test cases
+==========
+Your code should pass the following test cases.
+Note that it may also be run against hidden test cases not shown here.
+
+-- Python cases --
+Input:
+solution.solution(1,1)
+Output:
+    2
+
+Input:
+solution.solution([1, 7, 3, 21, 13, 19])
+Output:
+    0
+
+-- Java cases --
+Input:
+solution.solution(1,1)
+Output:
+    2
+
+Input:
+Solution.solution([1, 7, 3, 21, 13, 19])
+Output:
+    0
+
+*/
+
+/* 
+I dont feel like there are any other option other than trying a large amount of times for each number to determine
+if it will be an infinite loop. The only shortcut is if the sum of the number is odd number, then it will
+never reach a state where both of the number is equal, hence odd number. 
+Since there are 3 possible loops that can happen, such as [1, 2] which it's loop
+is the most predictable where it ends with it's number reversed [2, 1]. Second one is [2, 38], which it will ends off 
+in a loop where it reached loop state in the middle of the process. 
+!1: 4, 36
+!2: 8, 32
+!3: 16, 24
+!4: 8, 32
+!5: 16, 24
+!6: 8, 32
+!7: 16, 24 
+and so on
+The last one is completely random, it will never stop and will never repeat any of the number within. 
+The matching part is the hard part, where you have to start with the number that has the lowest amount of pairs, 
+because a number with 10 pairs is more likely to find another pair elsewere than one with 2 pairs. Once it's used, 
+it's gone, cant be used again. Or else other with more choices might take the choices from the one that needs the most.
+And then loop through all it's pair to find the one that also have the lowest number of pair, and make them a pair. Do this
+until there can't be any more pairs. 
+
+!!!!sorry about leaving unnessasary comments in the code, those are used for testing.
+*/
+
+//code starts here
+
+import java.util.Scanner;
+
+public class foobar_google_distract_guard {
+
+	public static void find_next(int item1, int item2) {
+		int prev1 = 2 * item1;
+		int times = 1;
+		for (int i = 0; true; i++) {
+			//if ()
+		}
+	}
+
+	public static boolean possible(int item1, int item2) {
+		int back_one = item1;
+		if (item1 == item2) {
+			return false;
+		}
+		item2 -= item1;
+		item1 *= 2;
+		if (item1 > item2) {
+			int temp = item1;
+			item1 = item2;
+			item2 = temp;
+		} 
+		for (int i = 0; i < 1000; i++) {
+			//System.out.printf("!%d: %d, %d\n", i, item1, item2);
+			if (item1 == item2) {
+				return false;
+			}
+			if (item1 == back_one || item2 == back_one) {
+				return true;
+			}
+			item2 -= item1;
+			item1 *= 2;
+			if (item1 > item2) {
+				int temp = item1;
+				item1 = item2;
+				item2 = temp;
+			}
+		}
+		return true;
+	}
+
+	public static int priority(int[][] lst, int len) {
+		int smallest = 0;
+		for (int i = 1; i < len; i++) {
+			int size = lst[i][1];
+			if (lst[smallest][1] < 1) {
+				smallest = i;
+			} 
+			else if (size < lst[smallest][1] && size > 0) {
+				smallest = i;
+			}
+			//System.out.printf("P! small: %d, size: %d\n", lst[smallest][1], size);
+
+		}
+		return smallest;
+	}
+
+	public static int make_match(int id, int[][] lst) {
+		int len = lst[id][0] + 2;
+		int min = 2;
+		//System.out.println("len: " + len);
+		for (int i = 3; i < len; i++) {
+			int item = lst[id][i];
+			//System.out.println("c" + min);
+			if (lst[id][min] == -1) {
+				min = i;
+			} 
+			else if (item != -1 && lst[item][1] < lst[lst[id][min]][1]) {
+				//System.out.printf("!!targ %d, largest %d\n", lst[item][1], lst[lst[id][min]][1]);
+					
+				min = i;
+			}
+		}
+		//System.out.println(min);
+		return min;
+	}
+
+	public static void remover(int item1, int[][]lst) {
+		for (int i = 2; i < lst[item1][0] + 2; i++) {
+			int item = lst[item1][i];
+			if (item != -1) {
+				for (int x = 2; x < lst[item][0] + 2; x++) {
+					if (lst[item][x] == item1) {
+						lst[item][x] = -1;
+					}
+				}
+				lst[item][1]--;
+			}
+		}
+	}
+
+	public static int solution(int[] banana_list) {
+		//Your code here
+		int length = banana_list.length;
+		int[][] possible_combo = new int[length][length + 2];
+		for (int i = 0; i < length; i++) {
+			for (int x = 0; x < length; x++) {
+				int small = banana_list[i];
+				int big = banana_list[x];
+				if (banana_list[i] > banana_list[x]) {
+					small = banana_list[x];
+					big = banana_list[i];
+				}
+				if (possible(small, big)) {
+					possible_combo[i][++possible_combo[i][0] + 1] = x;
+					possible_combo[i][1]++;
+				}
+			}
+		}
+		int count = 0;
+		for (int i = 0; true; i++) {
+			int pri_one = priority(possible_combo, length);
+			if (possible_combo[pri_one][1] < 1) {
+				return length - count;
+			}
+			//System.out.printf("p: %d, ", pri_one);
+			int match = possible_combo[pri_one][make_match(pri_one, possible_combo)];
+			if (possible_combo[match][1] < 1) {
+				return length - count;
+			}
+			//System.out.printf("m: %d\n\n", match);
+			remover(match, possible_combo);
+			remover(pri_one, possible_combo);
+			possible_combo[pri_one][1] = -1;
+			possible_combo[match][1] = -1;
+			/*
+			for (int y = 0; y < length; y++) {
+				System.out.printf("%d with %d %d matchs: ", banana_list[y], possible_combo[y][0], possible_combo[y][1]);
+				for (int x = 2; x < possible_combo[y][0] + 2; x++) {
+					if (possible_combo[y][x] == -1) {
+						System.out.print("deleted ");
+					} else {
+						System.out.print(banana_list[possible_combo[y][x]] + " ");
+					}
+				}
+				System.out.println();
+			}
+			*/
+			count += 2;
+		}
+	}
+  
+  // below was omitted during submission
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner s = new Scanner(System.in);
+		int test = 1073741823 * 2;
+		//System.out.println(test);
+
+		int[] testlst = {1, 7, 3, 21, 13, 19};
+		System.out.println(solution(testlst));
+		while (true) {
+			int one = s.nextInt();
+			int two = s.nextInt();
+			System.out.println(possible(one, two));
+		}
+	}
+}
